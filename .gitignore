@@ -1,0 +1,56 @@
+# Build outputs
+/dist
+/build
+/temp
+/tmp
+/.temp
+/.tmp
+
+# Node modules
+/node_modules
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test coverage
+/coverage
+/.nyc_output
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Diagnostic reports
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# dotenv environment files
+.env
+.env.*
+!.env.example
+
+# IDE settings
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+*.launch
+.settings/
+.c9/
+.project
+.classpath
+
+# NestJS specific
+node_modules/
+dist/
