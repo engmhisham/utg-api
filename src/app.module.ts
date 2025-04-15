@@ -25,16 +25,19 @@ import { AuditLogsModule } from './audit-logs/audit-logs.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get('DB_HOST', 'localhost'),
-        port: configService.get<number>('DB_PORT', 5432),
-        username: configService.get('DB_USERNAME', 'postgres'),
-        password: configService.get('DB_PASSWORD', 'password'),
-        database: configService.get('DB_DATABASE', 'utg_dashboard'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: configService.get<boolean>('DB_SYNC', false),
-      }),
+      useFactory: (configService: ConfigService) => {
+        console.log('DB_HOST =', configService.get('DB_HOST'));
+        return {
+          type: 'postgres',
+          host: configService.get('DB_HOST', 'localhost'),
+          port: parseInt(configService.get('DB_PORT') || '5432'),
+          username: configService.get('DB_USERNAME'),
+          password: configService.get('DB_PASSWORD'),
+          database: configService.get('DB_DATABASE'),
+          entities: [__dirname + '/**/*.entity{.ts,.js}'],
+          synchronize: configService.get<boolean>('DB_SYNC', false),
+        };
+      },      
     }),
     UsersModule,
     AuthModule,
