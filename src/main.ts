@@ -38,9 +38,8 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   
   // Start the server
-  const port = parseInt(process.env.PORT || '3000', 10);
+  const port = configService.get<number>('PORT', 5000); // default fallback is good practice
   await app.listen(port);
-  console.log(`✅ Listening on port ${port}`);
   console.log(`✅ App is running on http://localhost:${port}/api`);
 }
 
