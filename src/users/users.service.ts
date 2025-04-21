@@ -128,4 +128,8 @@ export class UsersService {
     
     return { id };
   }
+
+  async updatePassword(id: string, hashedPassword: string): Promise<void> {
+    await this.usersRepository.update(id, { password: hashedPassword });
+  }
 }

@@ -16,6 +16,8 @@ import { FaqsModule } from './faqs/faqs.module';
 import { FilesModule } from './files/files.module';
 import { SettingsModule } from './settings/settings.module';
 import { AuditLogsModule } from './audit-logs/audit-logs.module';
+import { ProjectsModule } from './projects/projects.module';
+import { BlogsModule } from './blogs/blogs.module';
 
 @Module({
   imports: [
@@ -52,6 +54,8 @@ import { AuditLogsModule } from './audit-logs/audit-logs.module';
     FilesModule,
     SettingsModule,
     AuditLogsModule,
+    ProjectsModule,
+    BlogsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
