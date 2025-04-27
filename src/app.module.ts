@@ -38,6 +38,8 @@ import { MediaModule } from './media/media.module';
           password: configService.get('DB_PASSWORD'),
           database: configService.get('DB_DATABASE'),
           entities: [__dirname + '/**/*.entity{.ts,.js}'],
+          migrations: [__dirname + '/migrations/*{.ts,.js}'],
+          migrationsRun: true,
           synchronize: configService.get<boolean>('DB_SYNC', false),
         };
       },      
