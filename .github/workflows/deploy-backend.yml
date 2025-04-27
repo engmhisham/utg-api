@@ -1,0 +1,40 @@
+name: "Deploy Backend"
+
+# Trigger on pushes to main branch
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+
+      # 1 Check out your code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2) Copy the code to your server
+      - name: Copy files to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          source: "."
+          target: "/var/www/backend"
+
+      # 3 Install deps & restart with PM2
+      - name: Install & restart on server
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            cd /var/www/backend
+            npm install -g pm2
+            npm ci --only=production
+            # reload if exists, otherwise start
+            pm2 reload backend || pm2 start npm --name backend -- start
