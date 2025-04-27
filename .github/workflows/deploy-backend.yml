@@ -34,7 +34,7 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           script: |
             cd /var/www/backend
-            npm install -g pm2
+            npm install -g pm2 
             npm ci --only=production
             # reload if exists, otherwise start
             pm2 reload backend || pm2 start npm --name backend -- start
