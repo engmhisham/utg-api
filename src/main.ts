@@ -42,7 +42,7 @@ async function bootstrap() {
   
   // Start the server
   const port = configService.get<number>('PORT', 5000); // default fallback is good practice
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
   console.log(`✅ App is running on http://localhost:${port}/api`);
 }
 
