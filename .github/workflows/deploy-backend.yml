@@ -37,4 +37,5 @@ jobs:
             npm install -g pm2 
             npm ci --only=production
             # reload if exists, otherwise start
+            npm run build
             pm2 reload backend || pm2 start npm --name backend -- start
