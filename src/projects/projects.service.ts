@@ -11,6 +11,7 @@ import { LanguageEnum } from '../common/enums/language.enum';
 import { PaginationParams, PaginatedResult } from '../common/interfaces/pagination.interface';
 import { AuditLogsService } from '../audit-logs/audit-logs.service';
 import { ActionType } from '../audit-logs/entities/audit-log.entity';
+import { MediaService } from 'src/media/media.service';
 
 @Injectable()
 export class ProjectsService {
@@ -18,6 +19,7 @@ export class ProjectsService {
     @InjectRepository(Project)
     private projectsRepository: Repository<Project>,
     private auditLogsService: AuditLogsService,
+    private readonly mediaService: MediaService,
   ) {}
 
   async findAll(
@@ -86,6 +88,79 @@ export class ProjectsService {
     
     if (!project) {
       throw new NotFoundException(`Project with ID ${id} not found`);
+    }
+
+    // ① capture old logo URL
+    const oldImage1Url = project.image1Url;
+    const oldImage2Url = project.image2Url;
+    const oldImage3Url = project.image3Url;
+    const oldImage4Url = project.image4Url;
+
+    // ② if the DTO contains a new logoUrl and it's different,
+    //     delete the old one from media storage
+    if (
+      updateProjectDto.image1Url &&
+      oldImage1Url &&
+      updateProjectDto.image1Url !== oldImage1Url
+    ) {
+      try {
+        await this.mediaService.removeByUrl(oldImage1Url);
+      } catch (err) {
+        // you can log this but still proceed with update
+        console.warn('Failed to delete image1Url:', err);
+      }
+    }
+
+    if (
+      updateProjectDto.image2Url &&
+      oldImage2Url &&
+      updateProjectDto.image2Url !== oldImage2Url
+    ) {
+      try {
+        await this.mediaService.removeByUrl(oldImage2Url);
+      } catch (err) {
+        // you can log this but still proceed with update
+        console.warn('Failed to delete image2Url:', err);
+      }
+    }
+
+    if (
+      updateProjectDto.image2Url &&
+      oldImage2Url &&
+      updateProjectDto.image2Url !== oldImage2Url
+    ) {
+      try {
+        await this.mediaService.removeByUrl(oldImage2Url);
+      } catch (err) {
+        // you can log this but still proceed with update
+        console.warn('Failed to delete image2Url:', err);
+      }
+    }
+
+    if (
+      updateProjectDto.image3Url &&
+      oldImage3Url &&
+      updateProjectDto.image3Url !== oldImage3Url
+    ) {
+      try {
+        await this.mediaService.removeByUrl(oldImage3Url);
+      } catch (err) {
+        // you can log this but still proceed with update
+        console.warn('Failed to delete image3Url:', err);
+      }
+    }
+
+    if (
+      updateProjectDto.image4Url &&
+      oldImage4Url &&
+      updateProjectDto.image4Url !== oldImage4Url
+    ) {
+      try {
+        await this.mediaService.removeByUrl(oldImage4Url);
+      } catch (err) {
+        // you can log this but still proceed with update
+        console.warn('Failed to delete image4Url:', err);
+      }
     }
     
     const oldValues = { ...project };

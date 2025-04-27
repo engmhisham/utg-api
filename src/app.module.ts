@@ -18,6 +18,7 @@ import { SettingsModule } from './settings/settings.module';
 import { AuditLogsModule } from './audit-logs/audit-logs.module';
 import { ProjectsModule } from './projects/projects.module';
 import { BlogsModule } from './blogs/blogs.module';
+import { MediaModule } from './media/media.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { BlogsModule } from './blogs/blogs.module';
     AuditLogsModule,
     ProjectsModule,
     BlogsModule,
+    MediaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

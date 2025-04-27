@@ -11,6 +11,7 @@ import { LanguageEnum } from '../common/enums/language.enum';
 import { PaginationParams, PaginatedResult } from '../common/interfaces/pagination.interface';
 import { AuditLogsService } from '../audit-logs/audit-logs.service';
 import { ActionType } from '../audit-logs/entities/audit-log.entity';
+import { MediaService } from 'src/media/media.service';
 
 @Injectable()
 export class BrandsService {
@@ -18,6 +19,7 @@ export class BrandsService {
     @InjectRepository(Brand)
     private brandsRepository: Repository<Brand>,
     private auditLogsService: AuditLogsService,
+    private readonly mediaService: MediaService,
   ) {}
 
   async findAll(
@@ -87,6 +89,24 @@ export class BrandsService {
     if (!brand) {
       throw new NotFoundException(`Brand with ID ${id} not found`);
     }
+
+     // ① capture old logo URL
+     const oldLogoUrl = brand.logoUrl;
+
+     // ② if the DTO contains a new logoUrl and it's different,
+     //     delete the old one from media storage
+     if (
+       updateBrandDto.logoUrl &&
+       oldLogoUrl &&
+       updateBrandDto.logoUrl !== oldLogoUrl
+     ) {
+       try {
+         await this.mediaService.removeByUrl(oldLogoUrl);
+       } catch (err) {
+         // you can log this but still proceed with update
+         console.warn('Failed to delete old logo:', err);
+       }
+     }
     
     const oldValues = { ...brand };
     

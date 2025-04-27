@@ -11,6 +11,7 @@ import { LanguageEnum } from '../common/enums/language.enum';
 import { PaginationParams, PaginatedResult } from '../common/interfaces/pagination.interface';
 import { AuditLogsService } from '../audit-logs/audit-logs.service';
 import { ActionType } from '../audit-logs/entities/audit-log.entity';
+import { MediaService } from 'src/media/media.service';
 
 @Injectable()
 export class TestimonialsService {
@@ -18,6 +19,7 @@ export class TestimonialsService {
     @InjectRepository(Testimonial)
     private testimonialsRepository: Repository<Testimonial>,
     private auditLogsService: AuditLogsService,
+    private readonly mediaService: MediaService,
   ) {}
 
   async findAll(
@@ -86,6 +88,38 @@ export class TestimonialsService {
     
     if (!testimonial) {
       throw new NotFoundException(`Testimonial with ID ${id} not found`);
+    }
+
+    // ① capture old logo URL
+    const oldLogoUrl = testimonial.logoUrl;
+    const oldCoverImageUrl = testimonial.coverImageUrl;
+
+    // ② if the DTO contains a new logoUrl and it's different,
+    //     delete the old one from media storage
+    if (
+      updateTestimonialDto.logoUrl &&
+      oldLogoUrl &&
+      updateTestimonialDto.logoUrl !== oldLogoUrl
+    ) {
+      try {
+        await this.mediaService.removeByUrl(oldLogoUrl);
+      } catch (err) {
+        // you can log this but still proceed with update
+        console.warn('Failed to delete old logo:', err);
+      }
+    }
+
+    if (
+      updateTestimonialDto.coverImageUrl &&
+      oldCoverImageUrl &&
+      updateTestimonialDto.coverImageUrl !== oldCoverImageUrl
+    ) {
+      try {
+        await this.mediaService.removeByUrl(oldCoverImageUrl);
+      } catch (err) {
+        // you can log this but still proceed with update
+        console.warn('Failed to delete old cover image:', err);
+      }
     }
     
     const oldValues = { ...testimonial };
