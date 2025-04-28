@@ -108,7 +108,7 @@ export class MediaService {
     newMedia.focalPoint = createMediaDto.focalPoint ?? null;
     newMedia.license = createMediaDto.license ?? null;
     newMedia.usage = [];
-
+    console.log('Saving media with path:', newPath);
     return this.mediaRepository.save(newMedia);
   }
 
