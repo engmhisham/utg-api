@@ -13,31 +13,31 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2 Setup Node.js (only for packaging if needed)
+      # 2 Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+          cache: 'npm'
 
-      # 3 Copy only important files to server
+      # 3 Install & build on runner
+      - name: Install dependencies
+        run: npm ci
+      - name: Build project
+        run: npm run build
+
+      # 4 Copy built code to server
       - name: Copy files to server
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.DEPLOY_HOST }}
+          host: ${{ secrets.DEPLOY_HOST }} 
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
-          source: |
-            package.json
-            package-lock.json
-            tsconfig.json
-            nest-cli.json
-            src/
-            .env
+          source: "."                              
           target: "/var/www/backend"
-          strip_components: 0
 
-      # 4 Install, build, and restart app directly on server
-      - name: Install, Build, and Restart on server
+      # 5 تثبيت prod dependencies وإعادة تشغيل عبر PM2
+      - name: Install & restart on server
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.DEPLOY_HOST }}
@@ -45,7 +45,6 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           script: |
             cd /var/www/backend
-            npm ci
-            npm run build
-            pm2 delete backend || true
+            npm ci --only=production           # يثبت فقط dependencies للـ production
+            pm2 delete backend || true         # يوقف أي عملية سابقة
             pm2 start dist/main.js --name backend --env PORT=5000 --node-args="--experimental-global-webcrypto"
