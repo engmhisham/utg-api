@@ -72,11 +72,25 @@ export class MediaService {
       console.error('Error getting image dimensions:', error);
     }
 
+    const folder = createMediaDto.category || 'general';
+    const newPath = `uploads/${folder}/${file.filename}`;
+
+    // 🆕 Move the file into the correct subfolder
+    const oldPath = path.join(process.cwd(), file.path);
+    const newFullPath = path.join(process.cwd(), newPath);
+
+    // Ensure folder exists
+    const dir = path.dirname(newFullPath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.renameSync(oldPath, newFullPath); // Move file
+
     const newMedia = new Media();
     newMedia.filename = file.filename;
     newMedia.originalname = file.originalname;
     newMedia.mimetype = file.mimetype;
-    newMedia.path = `uploads/${file.filename}`;
+    newMedia.path = newPath;
     newMedia.size = file.size;
     newMedia.width = width;
     newMedia.height = height;
@@ -90,7 +104,7 @@ export class MediaService {
     newMedia.description_ar = createMediaDto.description_ar ?? null;
     newMedia.credits = createMediaDto.credits ?? null;
     newMedia.tags = createMediaDto.tags || [];
-    newMedia.category = createMediaDto.category ?? null;
+    newMedia.category = folder ?? null;
     newMedia.focalPoint = createMediaDto.focalPoint ?? null;
     newMedia.license = createMediaDto.license ?? null;
     newMedia.usage = [];
