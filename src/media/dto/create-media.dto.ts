@@ -40,7 +40,7 @@ export class CreateMediaDto {
 
   @IsArray()
   @IsOptional()
-  tags?: string[];
+  tags?: any;
 
   @IsString()
   @IsOptional()
