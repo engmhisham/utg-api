@@ -62,6 +62,7 @@ export class MediaService {
   }
 
   async create(file: Express.Multer.File, createMediaDto: CreateMediaDto): Promise<Media> {
+    console.log('createMediaDto received:', createMediaDto);
     let width: number | null = null;
     let height: number | null = null;
     try {
