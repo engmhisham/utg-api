@@ -38,7 +38,10 @@ async function bootstrap() {
   });
   
   // Set global prefix
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api', {
+    exclude: ['/uploads/(.*)'],
+  });
+
   
   // Start the server
   const port = configService.get<number>('PORT', 5000); // default fallback is good practice
