@@ -16,7 +16,8 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:3000',               
-      'https://utg-dashboard.vercel.app',   
+      'https://utg-dashboard.vercel.app',
+      'http://38.242.251.48/',
     ],
     credentials: true,
   });
