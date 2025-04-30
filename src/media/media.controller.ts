@@ -93,4 +93,9 @@ export class MediaController {
   ) {
     return this.mediaService.removeUsage(id, usageDto);
   }
+
+  @Post('remove-by-url')
+  removeByUrl(@Body('url') url: string) {
+    return this.mediaService.removeByUrl(url);
+  }
 }
