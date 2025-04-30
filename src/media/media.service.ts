@@ -226,28 +226,33 @@ export class MediaService {
     }
   }
 
-  async removeByUrl(fullUrl: string): Promise<void> {
-    // 1. Parse out just the path portion, strip any leading "/api"
-    const parsed = new URL(fullUrl);
-    let relPath = parsed.pathname.replace(/^\/api/, '');   // remove "/api"
-    relPath = relPath.replace(/^\/+/, '');                  // drop any leading slash
-
-    // 2. Look it up in the DB
-    const media = await this.mediaRepository.findOne({ where: { path: relPath } });
-    if (!media) {
-      throw new NotFoundException(`No media record for URL ${fullUrl}`);
+  async removeByUrl(input: string): Promise<void> {
+    let relPath: string;
+  
+    // 1️⃣ Handle full URL (http://host/uploads/xxx.jpg) or path (/uploads/xxx.jpg)
+    try {
+      const parsed = new URL(input);
+      relPath = parsed.pathname.replace(/^\/api/, '').replace(/^\/+/, '');
+    } catch {
+      // Not a full URL, treat it as path
+      relPath = input.replace(/^\/+/, '');
     }
-
-    // 3. If it's not in use, unlink from disk
-    if (!(media.usage && media.usage.length > 0)) {
+  
+    // 2️⃣ Find in DB
+    const media = await this.mediaRepository.findOne({ where: { path: relPath } });
+    if (!media) throw new NotFoundException(`No media found for path: ${relPath}`);
+  
+    // 3️⃣ Delete from disk if not in use
+    if (!media.usage?.length) {
       try {
         await unlinkAsync(path.join(process.cwd(), media.path));
       } catch (err) {
         console.error('Failed to delete file from disk:', err);
       }
     }
-
-    // 4. Remove the DB record
+  
+    // 4️⃣ Remove from DB
     await this.mediaRepository.remove(media);
   }
+  
 }
