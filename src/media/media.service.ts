@@ -240,7 +240,10 @@ export class MediaService {
   
     // 2️⃣ Find in DB
     const media = await this.mediaRepository.findOne({ where: { path: relPath } });
-    if (!media) throw new NotFoundException(`No media found for path: ${relPath}`);
+    if (!media) {
+      console.warn('⚠️ No media found to remove for path:', relPath);
+      return;
+    }
   
     // 3️⃣ Delete from disk if not in use
     if (!media.usage?.length) {
