@@ -226,26 +226,23 @@ export class MediaService {
     }
   }
 
-  async removeByUrl(input: string): Promise<void> {
+  async removeByUrl(input: string): Promise<{ status: string }> {
     let relPath: string;
   
-    // 1️⃣ Handle full URL (http://host/uploads/xxx.jpg) or path (/uploads/xxx.jpg)
     try {
       const parsed = new URL(input);
       relPath = parsed.pathname.replace(/^\/api/, '').replace(/^\/+/, '');
     } catch {
-      // Not a full URL, treat it as path
       relPath = input.replace(/^\/+/, '');
     }
   
-    // 2️⃣ Find in DB
     const media = await this.mediaRepository.findOne({ where: { path: relPath } });
+  
     if (!media) {
-      console.warn('⚠️ No media found to remove for path:', relPath);
-      return;
+      console.warn('No media found to remove for path:', relPath);
+      return { status: 'not_found' }; 
     }
   
-    // 3️⃣ Delete from disk if not in use
     if (!media.usage?.length) {
       try {
         await unlinkAsync(path.join(process.cwd(), media.path));
@@ -254,8 +251,9 @@ export class MediaService {
       }
     }
   
-    // 4️⃣ Remove from DB
     await this.mediaRepository.remove(media);
+    return { status: 'removed' }; 
   }
+  
   
 }
