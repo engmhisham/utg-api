@@ -9,8 +9,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env:
-      NODE_ENV: production
 
     steps:
       # 1) Checkout code
