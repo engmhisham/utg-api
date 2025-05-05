@@ -31,19 +31,19 @@ export class FaqsService {
   ): Promise<PaginatedResult<any>> {
     const { page = 1, limit = 10, sortBy = 'displayOrder', sortOrder = 'ASC' } = params;
     
-    const query = this.faqsRepository.createQueryBuilder('faq');
-    
-    if (category) {
-      query.andWhere('faq.categoryId = :category', { category });
-    }
-    
-    if (status) {
-      query.andWhere('faq.status = :status', { status });
-    }
+    const query = this.faqsRepository.createQueryBuilder('faq')
+      .leftJoinAndSelect('faq.category', 'category');
 
     const allowedSortColumns = ['displayOrder', 'createdAt', 'updatedAt'];
-    const safeSortBy = allowedSortColumns.includes(sortBy) ? sortBy : 'displayOrder';
-    query.orderBy(`faq.${safeSortBy}`, sortOrder);
+    let safeSortBy = 'faq.displayOrder';
+
+    if (sortBy === 'category') {
+      safeSortBy = 'category.name';
+    } else if (allowedSortColumns.includes(sortBy)) {
+      safeSortBy = `faq.${sortBy}`;
+    }
+  
+  query.orderBy(safeSortBy, sortOrder);
     
     const total = await query.getCount();
     const skip = (page - 1) * limit;
