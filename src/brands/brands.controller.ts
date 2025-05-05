@@ -42,6 +42,8 @@ import {
       return this.brandsService.findAll(language, status, { page, limit, sortBy, sortOrder });
     }
   
+    @UseGuards(RolesGuard)
+    @Roles(UserRole.ADMIN)
     @Get(':id')
     findOne(
       @Param('id') id: string,
@@ -62,7 +64,7 @@ import {
   
     @Patch(':id')
     @UseGuards(RolesGuard)
-    @Roles(UserRole.ADMIN, UserRole.CONTENT_SUPPORT)
+    @Roles(UserRole.ADMIN)
     update(
       @Param('id') id: string,
       @Body() updateBrandDto: UpdateBrandDto,
