@@ -43,6 +43,8 @@ import {
     }
   
     @Get(':id')
+    @UseGuards(RolesGuard)
+    @Roles(UserRole.ADMIN)
     findOne(
       @Param('id') id: string,
       @Query('language') language: LanguageEnum = LanguageEnum.EN,
@@ -62,7 +64,7 @@ import {
   
     @Patch(':id')
     @UseGuards(RolesGuard)
-    @Roles(UserRole.ADMIN, UserRole.CONTENT_SUPPORT)
+    @Roles(UserRole.ADMIN)
     update(
       @Param('id') id: string,
       @Body() updateTeamMemberDto: UpdateTeamMemberDto,
