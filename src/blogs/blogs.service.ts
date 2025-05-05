@@ -2,7 +2,7 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
-
+import { CategoriesService } from 'src/categories/categories.service';
 import { Blog, BlogStatus } from './entities/blog.entity';
 import { Media } from '../media/entities/media.entity';
 import { MediaService } from '../media/media.service';
@@ -26,6 +26,7 @@ export class BlogsService {
     private mediaRepository: Repository<Media>,
     private mediaService: MediaService,
     private auditLogsService: AuditLogsService,
+    private categoriesService: CategoriesService,
   ) {}
   private toDbPath(fullUrl: string): string {
     try {
@@ -87,6 +88,14 @@ export class BlogsService {
     }
 
     const blog = this.blogsRepository.create(createBlogDto);
+
+    if (createBlogDto.categoryId) {
+      const category = await this.categoriesService.findOne(createBlogDto.categoryId);
+      if (category) {
+        blog.category = category;
+      }
+    }
+
     if (createBlogDto.status === BlogStatus.PUBLISHED) {
       blog.publishedAt = new Date();
     }
@@ -187,6 +196,14 @@ export class BlogsService {
     }
 
     Object.assign(blog, updateBlogDto);
+    
+    if (updateBlogDto.categoryId) {
+      const category = await this.categoriesService.findOne(updateBlogDto.categoryId);
+      if (category) {
+        blog.category = category;
+      }
+    }
+    
     const updated = await this.blogsRepository.save(blog);
 
     const newUrlsEn = extractImageUrls(updated.content_en);

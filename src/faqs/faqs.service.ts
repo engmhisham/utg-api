@@ -12,6 +12,7 @@ import { LanguageEnum } from '../common/enums/language.enum';
 import { PaginationParams, PaginatedResult } from '../common/interfaces/pagination.interface';
 import { AuditLogsService } from '../audit-logs/audit-logs.service';
 import { ActionType } from '../audit-logs/entities/audit-log.entity';
+import { CategoriesService } from 'src/categories/categories.service';
 
 @Injectable()
 export class FaqsService {
@@ -19,6 +20,7 @@ export class FaqsService {
     @InjectRepository(Faq)
     private faqsRepository: Repository<Faq>,
     private auditLogsService: AuditLogsService,
+    private categoriesService: CategoriesService,
   ) {}
 
   async findAll(
@@ -72,6 +74,12 @@ export class FaqsService {
 
   async create(createFaqDto: CreateFaqDto, userId: string, username: string) {
     const faq = this.faqsRepository.create(createFaqDto);
+
+    if (createFaqDto.categoryId) {
+      const category = await this.categoriesService.findOne(createFaqDto.categoryId);
+      if (category) faq.category = category;
+    }
+
     const savedFaq = await this.faqsRepository.save(faq);
     
     // Log the action
@@ -97,6 +105,12 @@ export class FaqsService {
     const oldValues = { ...faq };
     
     Object.assign(faq, updateFaqDto);
+
+    if (updateFaqDto.categoryId) {
+      const category = await this.categoriesService.findOne(updateFaqDto.categoryId);
+      if (category) faq.category = category;
+    }
+
     const updatedFaq = await this.faqsRepository.save(faq);
     
     // Log the action

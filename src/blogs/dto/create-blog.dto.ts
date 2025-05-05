@@ -40,4 +40,8 @@ export class CreateBlogDto {
   @IsString()
   @IsNotEmpty()
   coverImageUrl: string;
+
+  @IsOptional()
+  @IsString()
+  categoryId?: string;
 }

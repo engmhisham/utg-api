@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Index } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Index, ManyToOne } from 'typeorm';
+import { Category } from 'src/categories/entities/category.entity';
 
 export enum BlogStatus {
   PUBLISHED = 'published',
@@ -53,4 +54,7 @@ export class Blog {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ManyToOne(() => Category, { eager: true, nullable: true })
+  category: Category;
 }

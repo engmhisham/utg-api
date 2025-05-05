@@ -1,18 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
 import { StatusEnum } from '../../common/enums/status.enum';
-import { FaqCategory } from '../../common/enums/faq-category.enum';
+import { Category } from 'src/categories/entities/category.entity';
 
 @Entity('faqs')
 export class Faq {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-
-  @Column({
-    type: 'enum',
-    enum: FaqCategory,
-    default: FaqCategory.GENERAL,
-  })
-  category: FaqCategory;
 
   @Column({
     type: 'enum',
@@ -41,4 +34,7 @@ export class Faq {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ManyToOne(() => Category, { eager: true, nullable: true })
+  category: Category;
 }
