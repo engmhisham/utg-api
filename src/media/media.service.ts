@@ -11,6 +11,7 @@ import { promisify } from 'util';
 import { PaginationParams, PaginatedResult } from '../common/interfaces/pagination.interface';
 import * as sharp from 'sharp';
 import { LanguageEnum } from '../common/enums/language.enum';
+import { Express } from 'express';
 
 const unlinkAsync = promisify(fs.unlink);
 

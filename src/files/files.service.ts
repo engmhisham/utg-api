@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { unlinkSync, readdirSync, statSync } from 'fs';
 import { join } from 'path';
 import { PaginationParams, PaginatedResult } from '../common/interfaces/pagination.interface';
+import { Express } from 'express';
 
 @Injectable()
 export class FilesService {

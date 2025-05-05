@@ -17,6 +17,7 @@ import {
   import { Roles } from '../auth/decorators/roles.decorator';
   import { UserRole } from '../users/entities/user.entity';
   import { FilesService } from './files.service';
+  import { Express } from 'express';
   
   @Controller('files')
   @UseGuards(JwtAuthGuard)
