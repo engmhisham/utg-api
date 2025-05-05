@@ -19,6 +19,7 @@ import { AuditLogsModule } from './audit-logs/audit-logs.module';
 import { ProjectsModule } from './projects/projects.module';
 import { BlogsModule } from './blogs/blogs.module';
 import { MediaModule } from './media/media.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { MediaModule } from './media/media.module';
     ProjectsModule,
     BlogsModule,
     MediaModule,
+    CategoriesModule
   ],
   controllers: [AppController],
   providers: [AppService],
