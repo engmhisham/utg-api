@@ -34,7 +34,7 @@ export class FaqsService {
     const query = this.faqsRepository.createQueryBuilder('faq');
     
     if (category) {
-      query.andWhere('faq.category = :category', { category });
+      query.andWhere('faq.categoryId = :category', { category });
     }
     
     if (status) {
