@@ -25,7 +25,7 @@ export class FaqsService {
 
   async findAll(
     language: LanguageEnum = LanguageEnum.EN,
-    category?: FaqCategory,
+    category?: string,
     status?: StatusEnum,
     params: PaginationParams = {},
   ): Promise<PaginatedResult<any>> {
@@ -33,6 +33,10 @@ export class FaqsService {
     
     const query = this.faqsRepository.createQueryBuilder('faq')
       .leftJoinAndSelect('faq.category', 'category');
+
+    if (category) {
+      query.andWhere('category.id = :category', { category });
+    }
 
     const allowedSortColumns = ['displayOrder', 'createdAt', 'updatedAt'];
     let safeSortBy = 'faq.displayOrder';
