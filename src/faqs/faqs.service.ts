@@ -40,8 +40,10 @@ export class FaqsService {
     if (status) {
       query.andWhere('faq.status = :status', { status });
     }
-    
-    query.orderBy(`faq.${sortBy}`, sortOrder);
+
+    const allowedSortColumns = ['displayOrder', 'createdAt', 'updatedAt'];
+    const safeSortBy = allowedSortColumns.includes(sortBy) ? sortBy : 'displayOrder';
+    query.orderBy(`faq.${safeSortBy}`, sortOrder);
     
     const total = await query.getCount();
     const skip = (page - 1) * limit;
