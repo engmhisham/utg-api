@@ -52,7 +52,7 @@ export class BlogsService {
     if (category) {
       query.andWhere('category.id = :categoryId', { categoryId: category });
     }
-    
+
     query.orderBy(`blog.${sortBy}`, sortOrder as 'ASC' | 'DESC');
     const total = await query.getCount();
     query.skip((page - 1) * limit).take(limit);
@@ -452,32 +452,40 @@ export class BlogsService {
   }
 
   private formatBlog(blog: Blog, language: LanguageEnum) {
-    const base = {
-      id: blog.id,
-      slug: blog.slug,
-      status: blog.status,
-      coverImageUrl: blog.coverImageUrl,
-      publishedAt: blog.publishedAt,
-      createdAt: blog.createdAt,
-      updatedAt: blog.updatedAt,
-    };
+  const base = {
+    id: blog.id,
+    slug: blog.slug,
+    status: blog.status,
+    coverImageUrl: blog.coverImageUrl,
+    publishedAt: blog.publishedAt,
+    createdAt: blog.createdAt,
+    updatedAt: blog.updatedAt,
+    categoryId: blog.category?.id || null,
+    category: blog.category
+      ? {
+          id: blog.category.id,
+          name: blog.category.name,
+        }
+      : null,
+  };
 
-    if (language === LanguageEnum.EN) {
-      return {
-        ...base,
-        title: blog.title_en,
-        description: blog.description_en,
-        content: blog.content_en,
-      };
-    }
-
+  if (language === LanguageEnum.EN) {
     return {
       ...base,
-      title: blog.title_ar,
-      description: blog.description_ar,
-      content: blog.content_ar,
+      title: blog.title_en,
+      description: blog.description_en,
+      content: blog.content_en,
     };
   }
+
+  return {
+    ...base,
+    title: blog.title_ar,
+    description: blog.description_ar,
+    content: blog.content_ar,
+  };
+}
+
 
   async getTranslation(id: string, language: LanguageEnum) {
     const blog = await this.blogsRepository.findOne({ where: { id } });
