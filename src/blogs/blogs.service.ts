@@ -45,10 +45,12 @@ export class BlogsService {
     const { page = 1, limit = 10, sortBy = 'createdAt', sortOrder = 'DESC', category} = params;
     const query = this.blogsRepository.createQueryBuilder('blog').leftJoinAndSelect('blog.category', 'category');
 
-    if (status) {
-      query.where('blog.status = :status', { status });
+    if (status || category) {
+      query.where('1 = 1'); // dummy condition to allow dynamic ANDs
     }
-    
+    if (status) {
+      query.andWhere('blog.status = :status', { status });
+    }
     if (category) {
       query.andWhere('category.id = :categoryId', { categoryId: category });
     }

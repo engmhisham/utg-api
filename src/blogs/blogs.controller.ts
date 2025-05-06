@@ -35,10 +35,11 @@ import {
       @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
       @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
       @Query('status') status?: BlogStatus,
+      @Query('categoryId') categoryId?: string,
       @Query('sortBy') sortBy: string = 'createdAt',
       @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'DESC',
     ) {
-      return this.blogsService.findAll(language, status, { page, limit, sortBy, sortOrder });
+      return this.blogsService.findAll(language, status, { page, limit, sortBy, sortOrder, category: categoryId });
     }
   
     @Get(':id')
