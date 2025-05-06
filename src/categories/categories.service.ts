@@ -15,26 +15,41 @@ export class CategoriesService {
   constructor(
     @InjectRepository(Category)
     private categoryRepo: Repository<Category>,
-  
+
     @InjectRepository(Blog)
     private blogRepository: Repository<Blog>,
-  
+
     @InjectRepository(Faq)
     private faqRepository: Repository<Faq>,
     private auditLogsService: AuditLogsService,
-  ) {}
+  ) { }
 
   create(dto: CreateCategoryDto) {
     const category = this.categoryRepo.create(dto);
     return this.categoryRepo.save(category);
   }
 
-  findAll(type?: CategoryType) {
-    if (type) {
-      return this.categoryRepo.find({ where: { type } });
-    }
-    return this.categoryRepo.find();
+  async findAll(type?: CategoryType) {
+    const categories = await this.categoryRepo.find({
+      where: type ? { type } : {},
+      order: { name: 'ASC' },
+    });
+
+    return await Promise.all(
+      categories.map(async (cat) => {
+        let usedByCount = 0;
+
+        if (cat.type === CategoryType.BLOG) {
+          usedByCount = await this.blogRepository.count({ where: { category: { id: cat.id } } });
+        } else if (cat.type === CategoryType.FAQ) {
+          usedByCount = await this.faqRepository.count({ where: { category: { id: cat.id } } });
+        }
+
+        return { ...cat, usedByCount };
+      })
+    );
   }
+
 
   findOne(id: string) {
     return this.categoryRepo.findOne({ where: { id } });
@@ -76,8 +91,8 @@ export class CategoriesService {
       entityId: id,
       oldValues: category,
     });
-  
+
     return { id };
   }
-  
+
 }
