@@ -40,15 +40,19 @@ export class BlogsService {
   async findAll(
     language: LanguageEnum = LanguageEnum.EN,
     status?: BlogStatus,
-    params: PaginationParams = {},
+    params: PaginationParams & { category?: string } = {}
   ): Promise<PaginatedResult<any>> {
-    const { page = 1, limit = 10, sortBy = 'createdAt', sortOrder = 'DESC' } = params;
-    const query = this.blogsRepository.createQueryBuilder('blog');
+    const { page = 1, limit = 10, sortBy = 'createdAt', sortOrder = 'DESC', category} = params;
+    const query = this.blogsRepository.createQueryBuilder('blog').leftJoinAndSelect('blog.category', 'category');
 
     if (status) {
       query.where('blog.status = :status', { status });
     }
-
+    
+    if (category) {
+      query.andWhere('category.id = :categoryId', { categoryId: category });
+    }
+    
     query.orderBy(`blog.${sortBy}`, sortOrder as 'ASC' | 'DESC');
     const total = await query.getCount();
     query.skip((page - 1) * limit).take(limit);
