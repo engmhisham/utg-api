@@ -1,5 +1,5 @@
 // src/page-seo/dto/create-page-seo.dto.ts
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, IsOptional } from 'class-validator';
 import { LanguageEnum } from '../../common/enums/language.enum';
 
 export class CreatePageSeoDto {
@@ -22,4 +22,8 @@ export class CreatePageSeoDto {
   @IsString()
   @IsNotEmpty()
   metaDescription: string;
+
+  @IsString()
+  @IsOptional()
+  canonicalTag?: string;
 }

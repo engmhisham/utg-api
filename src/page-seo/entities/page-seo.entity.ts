@@ -26,6 +26,9 @@ export class PageSeo {
   @Column({ type: 'text' })
   metaDescription: string;
 
+  @Column({ nullable: true })
+  canonicalTag?: string;
+
   @CreateDateColumn()
   createdAt: Date;
 
