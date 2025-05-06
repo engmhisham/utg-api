@@ -36,7 +36,7 @@ export class CategoriesController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN)
   remove(@Param('id') id: string, @CurrentUser() user) {
     return this.categoriesService.remove(id, user.id, user.username);
