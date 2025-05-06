@@ -14,10 +14,12 @@ import { ActionType } from 'src/audit-logs/entities/audit-log.entity';
 export class CategoriesService {
   constructor(
     @InjectRepository(Category)
-    @InjectRepository(Blog)
-    @InjectRepository(Faq)
     private categoryRepo: Repository<Category>,
+  
+    @InjectRepository(Blog)
     private blogRepository: Repository<Blog>,
+  
+    @InjectRepository(Faq)
     private faqRepository: Repository<Faq>,
     private auditLogsService: AuditLogsService,
   ) {}
