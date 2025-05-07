@@ -4,7 +4,11 @@ import { CategoryType } from '../entities/category.entity';
 export class CreateCategoryDto {
   @IsString()
   @IsNotEmpty()
-  name: string;
+  name_en: string;
+
+  @IsString()
+  @IsNotEmpty()
+  name_ar: string;
 
   @IsEnum(CategoryType)
   type: CategoryType;

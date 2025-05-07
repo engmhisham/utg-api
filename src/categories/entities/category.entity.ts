@@ -14,7 +14,10 @@ export class Category {
   id: string;
 
   @Column()
-  name: string;
+  name_en: string;
+
+  @Column()
+  name_ar: string;
 
   @Column({ type: 'enum', enum: CategoryType })
   type: CategoryType;

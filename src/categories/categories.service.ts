@@ -29,10 +29,10 @@ export class CategoriesService {
     return this.categoryRepo.save(category);
   }
 
-  async findAll(type?: CategoryType) {
+  async findAll(type?: CategoryType, language: 'en' | 'ar' = 'en') {
     const categories = await this.categoryRepo.find({
       where: type ? { type } : {},
-      order: { name: 'ASC' },
+      order: { [`name_${language}`]: 'ASC' },
     });
 
     return await Promise.all(
@@ -45,7 +45,12 @@ export class CategoriesService {
           usedByCount = await this.faqRepository.count({ where: { category: { id: cat.id } } });
         }
 
-        return { ...cat, usedByCount };
+        return {
+          id: cat.id,
+          type: cat.type,
+          usedByCount,
+          name: language === 'ar' ? cat.name_ar : cat.name_en,
+        };
       })
     );
   }

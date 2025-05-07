@@ -21,8 +21,11 @@ export class CategoriesController {
   }
 
   @Get()
-  findAll(@Query('type') type?: CategoryType) {
-    return this.categoriesService.findAll(type);
+  findAll(
+    @Query('type') type?: CategoryType,
+    @Query('language') lang: 'en' | 'ar' = 'en',
+  ) {
+    return this.categoriesService.findAll(type, lang);
   }
 
   @Get(':id')
