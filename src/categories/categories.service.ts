@@ -49,7 +49,8 @@ export class CategoriesService {
           id: cat.id,
           type: cat.type,
           usedByCount,
-          name: language === 'ar' ? cat.name_ar : cat.name_en,
+          name_en: cat.name_en,
+          name_ar: cat.name_ar,
         };
       })
     );
