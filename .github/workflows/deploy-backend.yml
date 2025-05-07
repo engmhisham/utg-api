@@ -43,7 +43,7 @@ jobs:
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           script: |
-            cd /var/www/backend0
+            cd /var/www/backend
             npm run build
             pm2 delete backend || true
             pm2 start dist/src/main.js --name backend --env PORT=5000 --node-args="--experimental-global-webcrypto"
