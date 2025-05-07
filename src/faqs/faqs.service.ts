@@ -254,7 +254,7 @@ export class FaqsService {
       displayOrder: faq.displayOrder,
       createdAt: faq.createdAt,
       updatedAt: faq.updatedAt,
-    }; 
+    };
     
     if (language === LanguageEnum.EN) {
       return {
