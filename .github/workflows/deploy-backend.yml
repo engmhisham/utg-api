@@ -8,45 +8,42 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
-      # 1 Check out code
+      # 1. Checkout code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2 Setup Node.js
+      # 2. Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
           cache: 'npm'
 
-      # 3 Install & build on runner
+      # 3. Install & build
       - name: Install dependencies
         run: npm ci
       - name: Build project
         run: npm run build
 
-      # 4 Copy built code to server
-      - name: Copy files to server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.DEPLOY_HOST }} 
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          source: "."                              
-          target: "/var/www/backend"
+      # 4. Copy built files with rsync via SSH
+      - name: Upload dist with rsync
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no" dist/ ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/backend/dist/
 
-      # 5 تثبيت prod dependencies وإعادة تشغيل عبر PM2
-      - name: Install, migrate & restart on server
+      # 5. Restart PM2
+      - name: Restart PM2 on server
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           script: |
-            cd /var/www/backend
-            npm ci --only=production           # يثبت فقط dependencies للـ production
+            cd /var/www/backend0
             npm run build
-            npm run migration:run
-            pm2 delete backend || true         # يوقف أي عملية سابقة
+            pm2 delete backend || true
             pm2 start dist/src/main.js --name backend --env PORT=5000 --node-args="--experimental-global-webcrypto"
