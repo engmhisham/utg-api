@@ -454,39 +454,42 @@ export class BlogsService {
   }
 
   private formatBlog(blog: Blog, language: LanguageEnum) {
-  const base = {
-    id: blog.id,
-    slug: blog.slug,
-    status: blog.status,
-    coverImageUrl: blog.coverImageUrl,
-    publishedAt: blog.publishedAt,
-    createdAt: blog.createdAt,
-    updatedAt: blog.updatedAt,
-    categoryId: blog.category?.id || null,
-    category: blog.category
-      ? {
+    const base = {
+      id: blog.id,
+      slug: blog.slug,
+      status: blog.status,
+      coverImageUrl: blog.coverImageUrl,
+      publishedAt: blog.publishedAt,
+      createdAt: blog.createdAt,
+      updatedAt: blog.updatedAt,
+      categoryId: blog.category?.id || null,
+      category: blog.category
+        ? {
           id: blog.category.id,
-          name: blog.category.name,
+          name:
+            language === LanguageEnum.EN
+              ? blog.category.name_en
+              : blog.category.name_ar,
         }
-      : null,
-  };
+        : null,
+    };
 
-  if (language === LanguageEnum.EN) {
+    if (language === LanguageEnum.EN) {
+      return {
+        ...base,
+        title: blog.title_en,
+        description: blog.description_en,
+        content: blog.content_en,
+      };
+    }
+
     return {
       ...base,
-      title: blog.title_en,
-      description: blog.description_en,
-      content: blog.content_en,
+      title: blog.title_ar,
+      description: blog.description_ar,
+      content: blog.content_ar,
     };
   }
-
-  return {
-    ...base,
-    title: blog.title_ar,
-    description: blog.description_ar,
-    content: blog.content_ar,
-  };
-}
 
 
   async getTranslation(id: string, language: LanguageEnum) {
