@@ -36,7 +36,6 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           rsync -avz -e "ssh -o StrictHostKeyChecking=no" dist/ ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/backend/dist/
           rsync -avz -e "ssh -o StrictHostKeyChecking=no" package.json ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/backend/
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no" .env.production ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/backend/  # تأكد من وجود هذا السيكرت
 
       # 5. Run migration
       - name: Run DB Migration
