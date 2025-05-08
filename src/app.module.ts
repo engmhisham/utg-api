@@ -20,6 +20,7 @@ import { ProjectsModule } from './projects/projects.module';
 import { BlogsModule } from './blogs/blogs.module';
 import { MediaModule } from './media/media.module';
 import { CategoriesModule } from './categories/categories.module';
+import { LocationsModule } from './locations/locations.module';
 
 @Module({
   imports: [
@@ -61,7 +62,8 @@ import { CategoriesModule } from './categories/categories.module';
     ProjectsModule,
     BlogsModule,
     MediaModule,
-    CategoriesModule
+    CategoriesModule,
+    LocationsModule
   ],
   controllers: [AppController],
   providers: [AppService],
