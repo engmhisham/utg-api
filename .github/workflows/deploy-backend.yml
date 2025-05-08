@@ -24,18 +24,33 @@ jobs:
       # 3. Install & build
       - name: Install dependencies
         run: npm ci
+
       - name: Build project
         run: npm run build
 
-      # 4. Copy built files with rsync via SSH
+      # 4. Copy built files to server
       - name: Upload dist with rsync
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           rsync -avz -e "ssh -o StrictHostKeyChecking=no" dist/ ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/backend/dist/
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no" package.json ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/backend/
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no" .env.production ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/backend/  # تأكد من وجود هذا السيكرت
 
-      # 5. Restart PM2
+      # 5. Run migration
+      - name: Run DB Migration
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            cd /var/www/backend
+            npm ci --omit=dev
+            node dist/data-source.js migration:run
+
+      # 6. Restart PM2
       - name: Restart PM2 on server
         uses: appleboy/ssh-action@v0.1.7
         with:
