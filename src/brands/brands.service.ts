@@ -56,14 +56,20 @@ export class BrandsService {
     };
   }
 
-  async findOne(id: string, language: LanguageEnum = LanguageEnum.EN) {
+  // async findOne(id: string, language: LanguageEnum = LanguageEnum.EN) {
+  //   const brand = await this.brandsRepository.findOne({ where: { id } });
+    
+  //   if (!brand) {
+  //     throw new NotFoundException(`Brand with ID ${id} not found`);
+  //   }
+    
+  //   return this.formatBrand(brand, language);
+  // }
+
+  async findOne(id: string): Promise<Brand> {
     const brand = await this.brandsRepository.findOne({ where: { id } });
-    
-    if (!brand) {
-      throw new NotFoundException(`Brand with ID ${id} not found`);
-    }
-    
-    return this.formatBrand(brand, language);
+    if (!brand) throw new NotFoundException('Brand not found');
+    return brand;
   }
 
   async create(createBrandDto: CreateBrandDto, userId: string, username: string) {

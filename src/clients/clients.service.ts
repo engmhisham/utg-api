@@ -56,14 +56,20 @@ export class ClientsService {
     };
   }
 
-  async findOne(id: string, language: LanguageEnum = LanguageEnum.EN) {
+  // async findOne(id: string, language: LanguageEnum = LanguageEnum.EN) {
+  //   const client = await this.clientsRepository.findOne({ where: { id } });
+    
+  //   if (!client) {
+  //     throw new NotFoundException(`Client with ID ${id} not found`);
+  //   }
+    
+  //   return this.formatClient(client, language);
+  // }
+
+  async findOne(id: string): Promise<Client> {
     const client = await this.clientsRepository.findOne({ where: { id } });
-    
-    if (!client) {
-      throw new NotFoundException(`Client with ID ${id} not found`);
-    }
-    
-    return this.formatClient(client, language);
+    if (!client) throw new NotFoundException('Client not found');
+    return client;
   }
 
   async create(createClientDto: CreateClientDto, userId: string, username: string) {

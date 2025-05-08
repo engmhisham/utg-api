@@ -42,14 +42,21 @@ import {
       return this.brandsService.findAll(language, status, { page, limit, sortBy, sortOrder });
     }
   
+    // @UseGuards(RolesGuard)
+    // @Roles(UserRole.ADMIN)
+    // @Get(':id')
+    // findOne(
+    //   @Param('id') id: string,
+    //   @Query('language') language: LanguageEnum = LanguageEnum.EN,
+    // ) {
+    //   return this.brandsService.findOne(id, language);
+    // }
+
+    @Get(':id')
     @UseGuards(RolesGuard)
     @Roles(UserRole.ADMIN)
-    @Get(':id')
-    findOne(
-      @Param('id') id: string,
-      @Query('language') language: LanguageEnum = LanguageEnum.EN,
-    ) {
-      return this.brandsService.findOne(id, language);
+    findOne(@Param('id') id: string) {
+      return this.brandsService.findOne(id);
     }
   
     @Post()

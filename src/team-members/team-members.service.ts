@@ -56,14 +56,20 @@ export class TeamMembersService {
     };
   }
 
-  async findOne(id: string, language: LanguageEnum = LanguageEnum.EN) {
+  // async findOne(id: string, language: LanguageEnum = LanguageEnum.EN) {
+  //   const teamMember = await this.teamMembersRepository.findOne({ where: { id } });
+    
+  //   if (!teamMember) {
+  //     throw new NotFoundException(`Team member with ID ${id} not found`);
+  //   }
+    
+  //   return this.formatTeamMember(teamMember, language);
+  // }
+
+  async findOne(id: string): Promise<TeamMember> {
     const teamMember = await this.teamMembersRepository.findOne({ where: { id } });
-    
-    if (!teamMember) {
-      throw new NotFoundException(`Team member with ID ${id} not found`);
-    }
-    
-    return this.formatTeamMember(teamMember, language);
+    if (!teamMember) throw new NotFoundException('Team member not found');
+    return teamMember;
   }
 
   async create(createTeamMemberDto: CreateTeamMemberDto, userId: string, username: string) {

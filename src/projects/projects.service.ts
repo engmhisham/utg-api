@@ -56,20 +56,26 @@ export class ProjectsService {
     };
   }
 
-  async findOne(id: string, language: LanguageEnum = LanguageEnum.EN) {
+  // async findOne(id: string, language: LanguageEnum = LanguageEnum.EN) {
+  //   const project = await this.projectsRepository.findOne({ where: { id } });
+    
+  //   if (!project) {
+  //     throw new NotFoundException(`Project with ID ${id} not found`);
+  //   }
+    
+  //   return this.formatProject(project, language);
+  // }
+
+  async findOne(id: string): Promise<Project> {
     const project = await this.projectsRepository.findOne({ where: { id } });
-    
-    if (!project) {
-      throw new NotFoundException(`Project with ID ${id} not found`);
-    }
-    
-    return this.formatProject(project, language);
+    if (!project) throw new NotFoundException('Project not found');
+    return project;
   }
 
   async create(createProjectDto: CreateProjectDto, userId: string, username: string) {
     const project = this.projectsRepository.create(createProjectDto);
     const savedProject = await this.projectsRepository.save(project);
-    
+
     // Log the action
     await this.auditLogsService.create({
       userId,
@@ -79,7 +85,7 @@ export class ProjectsService {
       entityId: savedProject.id,
       newValues: createProjectDto,
     });
-    
+
     return savedProject;
   }
 
