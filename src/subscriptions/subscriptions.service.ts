@@ -31,7 +31,7 @@ export class SubscriptionsService {
     return { id };
   }
 
-  async exportExcel(): Promise<Buffer> {
+  async exportExcel(): Promise<any> {
     const subs = await this.repo.find({ order: { subscribed_at: 'DESC' } });
 
     const workbook = new ExcelJS.Workbook();
@@ -48,6 +48,6 @@ export class SubscriptionsService {
     })));
 
     const buffer = await workbook.xlsx.writeBuffer();
-    return Buffer.from(buffer);
+    return buffer;
   }
 }
