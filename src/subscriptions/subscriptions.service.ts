@@ -44,7 +44,7 @@ export class SubscriptionsService {
 
     sheet.addRows(subs.map(sub => ({
       email: sub.email,
-      subscribed_at: sub.subscribed_at.toISOString(),
+      subscribed_at: sub.subscribed_at.toLocaleString(),
     })));
 
     const buffer = await workbook.xlsx.writeBuffer();
