@@ -34,11 +34,11 @@ export class LocationsController {
     return this.service.findAll(language, status, { page, limit, sortBy, sortOrder });
   }
 
+  @Get(':id')
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN)
-  @Get(':id')
-  findOne(@Param('id') id: string, @Query('language') language: LanguageEnum = LanguageEnum.EN) {
-    return this.service.findOne(id, language);
+  findOne(@Param('id') id: string) {
+    return this.service.findOne(id);
   }
 
   @Post()

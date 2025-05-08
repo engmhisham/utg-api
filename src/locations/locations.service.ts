@@ -51,10 +51,16 @@ export class LocationsService {
     };
   }
 
-  async findOne(id: string, language: LanguageEnum = LanguageEnum.EN) {
+  // async findOne(id: string, language: LanguageEnum = LanguageEnum.EN) {
+  //   const location = await this.locationRepo.findOne({ where: { id } });
+  //   if (!location) throw new NotFoundException('Location not found');
+  //   return this.formatLocation(location, language);
+  // }
+
+  async findOne(id: string) {
     const location = await this.locationRepo.findOne({ where: { id } });
     if (!location) throw new NotFoundException('Location not found');
-    return this.formatLocation(location, language);
+    return location;
   }
 
   async create(dto: CreateLocationDto, userId: string, username: string) {
