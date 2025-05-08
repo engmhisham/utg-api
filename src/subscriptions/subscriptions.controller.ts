@@ -20,7 +20,7 @@ import {
     }
   
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles(UserRole.ADMIN)
+    @Roles(UserRole.ADMIN, UserRole.CONTENT_SUPPORT)
     @Get()
     findAll() {
       return this.service.findAll();
