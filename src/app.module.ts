@@ -21,6 +21,7 @@ import { BlogsModule } from './blogs/blogs.module';
 import { MediaModule } from './media/media.module';
 import { CategoriesModule } from './categories/categories.module';
 import { LocationsModule } from './locations/locations.module';
+import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 
 @Module({
   imports: [
@@ -63,7 +64,8 @@ import { LocationsModule } from './locations/locations.module';
     BlogsModule,
     MediaModule,
     CategoriesModule,
-    LocationsModule
+    LocationsModule,
+    SubscriptionsModule
   ],
   controllers: [AppController],
   providers: [AppService],
